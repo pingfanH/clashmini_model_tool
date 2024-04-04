@@ -1,6 +1,6 @@
 import bpy
 import os
-from clashmini_model_tools.materials import material as SC_Material
+from clashmini_model_tools.materials import new_sc_material
 from clashmini_model_tools.utils.glb import GlbParser
 from clashmini_model_tools.utils.glb import GlbEncoder
 
@@ -31,10 +31,11 @@ def material_convert(json_model):
             material = slot.material
             if material is None and material.node_tree is None:
                 continue
-            temp_material = SC_Material.copy()
-            SC_shader = temp_material["extensions"]["SC_shader"]
-            SC_shader["name"] = material.name
-            SC_shader_var=SC_shader["variables"]
+            print(material.name)
+            _material = new_sc_material()
+            _sc_shader = _material["extensions"]["SC_shader"]
+            _sc_shader["name"] = material.name
+            SC_shader_var=_sc_shader["variables"]
             print("Material Name:", material.name)
             # 遍历节点树中的所有节点
             for node in material.node_tree.nodes:
@@ -43,7 +44,6 @@ def material_convert(json_model):
                 print("Group Name:", node.node_tree.name)
                 # 获取群组中的参数
                 for input_socket in node.inputs:
-
                     if input_socket.is_linked:
                         # 获取连接到输入插座的值
                         linked_node = input_socket.links[0].from_node
@@ -63,21 +63,32 @@ def material_convert(json_model):
                         print(input_socket.type)
                         match input_socket.type:
                             case 'VECTOR':
-                                if(input_socket.name.endswith("_vector")):
-                                    SC_shader_var[input_socket.name]=[input_socket.default_value[0], input_socket.default_value[1], input_socket.default_value[2]]
+                                if len(input_socket.default_value) == 4:
+                                    SC_shader_var[input_socket.name]=input_socket.default_value
+                                elif input_socket.name.endswith("_vector"):
+                                    SC_shader_var[replace_end(input_socket.name,"_vector","")]=[input_socket.default_value[0], input_socket.default_value[1], input_socket.default_value[2],0]
                                 else:
                                     SC_shader_var[input_socket.name]=[input_socket.default_value[0], input_socket.default_value[1], input_socket.default_value[2]]
+                                # if(input_socket.name.endswith("_vector")):
+                                #     SC_shader_var[input_socket.name]=[input_socket.default_value[0], input_socket.default_value[1], input_socket.default_value[2]]
+                                # else:
+                                #     SC_shader_var[input_socket.name]=input_socket.default_value
                             case 'VALUE':
                                 if(input_socket.name.endswith("_alpha")):
-                                    SC_shader_var[input_socket.name][3]=input_socket.default_value
+                                    SC_shader_var[replace_end(input_socket.name,"_alpha","")][3]=input_socket.default_value
                                 else:
                                     SC_shader_var[input_socket.name]=input_socket.default_value
+                            case 'RGBA':
+                                SC_shader_var[input_socket.name]=[input_socket.default_value[0], input_socket.default_value[1], input_socket.default_value[2],input_socket.default_value[3]]
                             case _:
                                 SC_shader_var[input_socket.name]=input_socket.default_value
                             
                         print(input_socket.name, input_socket.default_value)
-            print(temp_material)
-            json_model["materials"].append(temp_material)
+            _sc_shader["variables"]=SC_shader_var
+            _material["extensions"]["SC_shader"]=_sc_shader
+            #print(temp_material)
+            json_model["materials"].append(_material)
+
 def texture_add(json_model,texture_path):
     image = -1;
     if("/" not in texture_path):
@@ -87,13 +98,13 @@ def texture_add(json_model,texture_path):
             image = i
     result=None;
     if image == -1:
-        json_model["images"].append({
-            "uri": texture_path.replace(".png",".ktx"),
-        })
         textures_length =len(json_model["textures"])
         json_model["textures"].append({
             "source": len(json_model["images"]),
             "sampler": textures_length
+        })
+        json_model["images"].append({
+            "uri": texture_path.replace(".png",".ktx"),
         })
         result= textures_length
     else:
@@ -104,11 +115,8 @@ def texture_add(json_model,texture_path):
             "sampler": textures_length
         })
         result= textures_length
-    print("texture "+{
-            "source": image,
-            "sampler": result
-        })
-    print("image "+json_model["images"][json_model["textures"][result]["source"]]["uri"])
+    #print("texture "+"source "+str(image) +"sampler"+str(result))
+    #print("image "+json_model["images"][json_model["textures"][result]["source"]]["uri"])
     return result
 def glb2gltf(path: str):
 	parser = GlbParser(path)
@@ -117,3 +125,9 @@ def glb2gltf(path: str):
 def gltf2glb(path: str):
 	encoder = GlbEncoder(path)
 	encoder.encode()
+
+def replace_end(original_str, old_end, new_end):
+    if original_str.endswith(old_end):
+        return original_str[:-len(old_end)] + new_end
+    else:
+        return original_str

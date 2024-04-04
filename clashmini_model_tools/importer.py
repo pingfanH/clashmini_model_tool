@@ -91,10 +91,14 @@ def import_glb(path):
             # 获取对象
             obj = found_object#selected_objects[mesh["name"]]
             for index in range(len(mesh["primitives"])):
+                print("primitives",mesh["primitives"][index]["material"])
                 material=obj.material_slots[index].material
+                print(material.name)
                 group = CustomGroup(material)
 
-                sc_shader = json["materials"][mesh["primitives"][index]["material"]]["extensions"]["SC_shader"]
+                sc_shader = json["materials"][
+                    mesh["primitives"][index]["material"]
+                    ]["extensions"]["SC_shader"]
                 material.name=sc_shader["name"]
                 variables=sc_shader["variables"]
                 for key in variables:
