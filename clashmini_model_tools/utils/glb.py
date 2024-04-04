@@ -34,6 +34,22 @@ class GlbParser(Reader):
 		self.compile_gltf(data, binary)
 		
 		print("Done")
+	def parse_return(self):
+		magic = self.stream.read(4)
+		assert magic == b"glTF"
+		
+		version = self.readUInt32()
+		size = self.readUInt32()
+		
+		length = self.readUInt32()
+		name = self.readChar(4) # JSON
+		data = json.loads(self.readChar(length))
+		
+		length = self.readUInt32()
+		name = self.stream.read(4) # BIN\x00
+		binary = self.stream.read(length)
+		
+		return(data, binary)
 	
 	def compile_gltf(self, data: dict, binary: bytes):
 		save_path = os.path.splitext(self.path)[0] + ".json"
