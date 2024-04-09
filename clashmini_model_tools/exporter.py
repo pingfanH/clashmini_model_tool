@@ -19,10 +19,10 @@ class ModelExport(bpy.types.Operator):
         json_model = json.load(open(output_path))
         clash_mini_model(json_model)
         print("materials:",json_model["materials"])
-        # print()
-        # print("images:",json_model["images"])
-        # print()
-        # print("textures:",json_model["textures"])
+        print()
+        print("images:",json_model["images"])
+        print()
+        print("textures:",json_model["textures"])
         with open(output_path, 'w') as json_file:
             json.dump(json_model, json_file, indent=4)
         

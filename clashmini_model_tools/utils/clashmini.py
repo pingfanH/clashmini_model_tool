@@ -49,9 +49,14 @@ def material_convert(json_model):
                         linked_node = input_socket.links[0].from_node
                         if linked_node.type == 'TEX_IMAGE':
                             # 获取图像纹理节点的图像路径
-                            image_path=os.path.basename(linked_node.image.filepath)
-                            print("Image Path:", image_path)
-                            index = texture_add(json_model,image_path)
+                            #filepath=linked_node.image.filepath;
+                            image_name = remove_before_last_backslash(linked_node.image.filepath)
+                            print("------linked_node.image.filepath:"+image_name)
+                            # if "filepath://" in filepath:
+                            #     filepath = filepath.replace("filepath://","")
+                            #image_path=#remove_before_last_backslash(filepath)#os.path.basename(linked_node.image.filepath)
+                            #print("Image Path:", image_name)
+                            index = texture_add(json_model,image_name)
                             
                             SC_shader_var[input_socket.name]={
                                  "index": index
@@ -90,6 +95,7 @@ def material_convert(json_model):
             json_model["materials"].append(_material)
 
 def texture_add(json_model,texture_path):
+    print("texture_path:"+texture_path)
     image = -1;
     if("/" not in texture_path):
         texture_path="sc3d/"+texture_path
@@ -131,3 +137,9 @@ def replace_end(original_str, old_end, new_end):
         return original_str[:-len(old_end)] + new_end
     else:
         return original_str
+def remove_before_last_backslash(string):
+    index = string.rfind('\\')
+    if index != -1:  # If backslash is found
+        return string[index + 1:]
+    else:
+        return string

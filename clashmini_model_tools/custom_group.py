@@ -216,7 +216,7 @@ class CustomGroup:
         texture_node = self.shader_node_tree.nodes.new(type="ShaderNodeTexImage")
         texture_node.location = (-400, -400*self.images_load_index)  # 设置节点的位置
         self.images_load_index+=1;
-        texture_node.image = bpy.data.images.load(bpy.context.scene.sc3d_path+"/"+image_path.split("/")[-1])  # 加载纹理图片
+        texture_node.image = bpy.data.images.load(bpy.context.scene.sc3d_path+"/"+image_path.split("/")[-1])    # 加载纹理图片
         texture_node.name = node_name
         return texture_node
     def connect_texture_to_color(self, texture_node, color_input_name):
@@ -295,7 +295,7 @@ class CustomGroup:
             elif input_socket.type == 'RGBA':
                 if(value==""):
                     return
-                path = json["images"][value["index"]]["uri"].replace(".ktx",".png")  # 获取纹理图片路径;
+                path = json["images"][value["index"]]["uri"].split(".")[0]+".png"  # 获取纹理图片路径;
                 path ="D:/BS/clash mini/brawl_mini/model_export_addon/"+path
                 print("Texture path:", path)
                 texture_node = self.add_texture_node(path)

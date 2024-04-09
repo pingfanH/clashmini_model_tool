@@ -51,7 +51,7 @@ def import_glb(path):
                     return
                 image_index = json["textures"][value["index"]]["source"]
                 
-                path = json["images"][image_index]["uri"].replace(".ktx",".png")  # 获取纹理图片路径;
+                path = json["images"][image_index]["uri"].split(".")[0]+".png"  # 获取纹理图片路径;
                 path ="D:/BS/clash mini/brawl_mini/model_export_addon/"+path
                 print("Texture path:", path)
                 texture_node = self.add_texture_node(path)
