@@ -59,6 +59,7 @@ def import_glb(path):
                 path ="D:/BS/clash mini/brawl_mini/model_export_addon/"+path
                 print("Texture path:", path)
                 texture_node = self.add_texture_node(path)
+                texture_node.image.name=json["images"][image_index]["uri"]
                 self.connect_texture_to_color(texture_node, name)
                 #input_socket.default_value = value  # 用于 Color 类型
             elif input_socket.type == 'BOOLEAN':
@@ -73,7 +74,7 @@ def import_glb(path):
     
     for index in range(len(json["meshes"])):
         mesh =json["meshes"][index]
-        mesh_name = None;
+        mesh_name = None
         if mesh.get("name") is not None:
             #mesh_name = mesh["name"].rsplit(".", 1)[0]
             for node_index in range(len(json["nodes"]) - 1, -1, -1):
