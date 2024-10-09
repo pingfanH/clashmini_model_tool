@@ -8,12 +8,12 @@ import os;
 import asyncio
 bl_info = {
     "name": "Clash-mini-Tools",
-    "description": "",
+    "description": "Tool For ClashMini Models",
     "author": "Pingfanh",
-    "version": (0, 0, 1),
+    "version": (1, 0, 0),
     "blender": (3, 0, 0),
-    "warning": "This addon is still in development.",
-    "wiki_url": "",
+    #"warning": "This addon is still in development.",
+    "wiki_url": "https://github.com/pingfanH",
     "category": "3D View"
 }
 
@@ -30,7 +30,7 @@ class ExporterPanel(bpy.types.Panel):
         scene = context.scene
 
         row = layout.row()
-        row.label(text=bl_info["name"]+" version-0.0.1", icon='WORLD_DATA')
+        row.label(text=bl_info["name"]+" version-1.0.0", icon='WORLD_DATA')
         
         row = layout.row()
         row.label(text="ModelPath:")
@@ -39,7 +39,7 @@ class ExporterPanel(bpy.types.Panel):
         row.prop(scene, "export_model_path", text="")
         
         row = layout.row()
-        row.operator("item.model_export",text="导出", icon='MESH_CUBE')
+        row.operator("item.model_export",text="Export", icon='MESH_CUBE')
 
         row = layout.row()
         row.label(text="Sc3dPath:")
@@ -54,7 +54,7 @@ class ExporterPanel(bpy.types.Panel):
         row.prop(scene, "import_model_path", text="")
         
         row = layout.row()
-        row.operator("item.model_import",text="导入", icon='MESH_CUBE')
+        row.operator("item.model_import",text="Import", icon='MESH_CUBE')
 
 
 
