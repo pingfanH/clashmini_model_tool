@@ -21,7 +21,7 @@ class ModelImport(bpy.types.Operator):
         return {'FINISHED'}
 
 def import_glb(path):
-    bpy.ops.import_scene.gltf(filepath=path)
+    bpy.ops.import_scene.gltf(filepath=path,bone_heuristic='BLENDER')
     json = glb2gltf(path)
     
     def set_socket(self, name, value):
@@ -36,6 +36,10 @@ def import_glb(path):
             if input_socket.type == 'VALUE':
                 input_socket.default_value = value  # 用于 Float 和 Int 类型
             elif input_socket.type == 'VECTOR':
+                if isinstance(value, (int, float)):
+                    list=[value,value,value]
+                    input_socket.default_value =list
+                    return
                 if len(value) == 4:
                     input_vector = self.custom_group_node.inputs.get(name + "_vector")
                     input_alpha = self.custom_group_node.inputs.get(name + "_alpha")

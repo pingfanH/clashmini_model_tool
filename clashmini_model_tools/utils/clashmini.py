@@ -50,7 +50,8 @@ def material_convert(json_model):
                         if linked_node.type == 'TEX_IMAGE':
                             # 获取图像纹理节点的图像路径
                             #filepath=linked_node.image.filepath;
-                            image_name = remove_before_last_backslash(linked_node.image.filepath)
+                            image_name = linked_node.image.name#remove_before_last_backslash(linked_node.image.filepath)
+                            print(linked_node.image)
                             print("------linked_node.image.filepath:"+image_name)
                             # if "filepath://" in filepath:
                             #     filepath = filepath.replace("filepath://","")
@@ -97,11 +98,13 @@ def material_convert(json_model):
 def texture_add(json_model,texture_path):
     print("texture_path:"+texture_path)
     image = -1;
-    if("/" not in texture_path):
-        texture_path="sc3d/"+texture_path
-    for i in range(len(json_model["textures"])):
-        if json_model["images"][i]["uri"]==texture_path:
-            image = i
+    if("/" in texture_path):
+        texture_path="sc3d/"+(texture_path.split("/")[1])
+    else:
+        texture_path="sc3d/"+(texture_path)
+    # for i in range(len(json_model["textures"])):
+    #     if json_model["images"][i]["uri"]==texture_path:
+    #         image = i
     result=None;
     if image == -1:
         textures_length =len(json_model["textures"])
@@ -110,11 +113,11 @@ def texture_add(json_model,texture_path):
             "sampler": textures_length
         })
         json_model["images"].append({
-            "uri": texture_path.replace(".png",".ktx"),
+            "uri": texture_path#.replace(".png",".ktx"),
         })
         result= textures_length
     else:
-        print("Same Image :"+json_model["images"][i]["uri"]);
+        print("Same Image :"+json_model["images"][i]["uri"])
         textures_length =len(json_model["textures"])
         json_model["textures"].append({
             "source": image,
@@ -138,8 +141,16 @@ def replace_end(original_str, old_end, new_end):
     else:
         return original_str
 def remove_before_last_backslash(string):
+    result = ""
     index = string.rfind('\\')
     if index != -1:  # If backslash is found
-        return string[index + 1:]
+        result= string[index + 1:]
     else:
-        return string
+        result= string
+    index = result.rfind('//')
+    if index != -1:  # If backslash is found
+        result= result[index + 1:]
+    else:
+        result= result
+    return result
+

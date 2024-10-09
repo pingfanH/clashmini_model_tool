@@ -28,12 +28,12 @@ class ModelExport(bpy.types.Operator):
         
         gltf2glb(output_path)
 
-        with open(output_path.replace(".gltf",".glb"), 'rb') as src:
-            with open(os.path.dirname(output_path)+"/"+os.path.basename(output_path).replace(".gltf","")+"_lod1.glb", 'wb') as dest:
-                dest.write(src.read())
-        with open(output_path.replace(".gltf",".glb"), 'rb') as src:
-            with open(os.path.dirname(output_path)+"/"+os.path.basename(output_path).replace(".gltf","")+"_lod2.glb", 'wb') as dest:
-                dest.write(src.read())
+        # with open(output_path.replace(".gltf",".glb"), 'rb') as src:
+        #     with open(os.path.dirname(output_path)+"/"+os.path.basename(output_path).replace(".gltf","")+"_lod1.glb", 'wb') as dest:
+        #         dest.write(src.read())
+        # with open(output_path.replace(".gltf",".glb"), 'rb') as src:
+        #     with open(os.path.dirname(output_path)+"/"+os.path.basename(output_path).replace(".gltf","")+"_lod2.glb", 'wb') as dest:
+        #         dest.write(src.read())
         
         os.remove(output_path)
         os.remove(output_path.replace(".gltf",".bin"))
