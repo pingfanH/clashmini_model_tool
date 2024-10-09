@@ -16,6 +16,11 @@ class ModelExport(bpy.types.Operator):
         use_selection=True,  # 仅导出选中的对象
         #export_apply=True  # 应用所有变换
         )
+        if "." not in output_path:
+            output_path+=".gltf"
+        else:
+            output_path=output_path.split(".")[0]+".gltf"
+        print(output_path)
         json_model = json.load(open(output_path))
         clash_mini_model(json_model)
         print("materials:",json_model["materials"])
