@@ -14,6 +14,7 @@ class ModelExport(bpy.types.Operator):
         filepath=output_path,
         export_format='GLTF_SEPARATE',  # 导出模型和纹理为单独文件
         use_selection=True,  # 仅导出选中的对象
+        export_animations=False
         #export_apply=True  # 应用所有变换
         )
         if "." not in output_path:
